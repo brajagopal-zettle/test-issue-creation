@@ -29,13 +29,13 @@ checkCommitSignOff() {
   for commit in $commits
     do
       found=false
-      while read -r comment
+      while IFS= read -r comment
       do
         if [ "$commit done" = "$comment" ]; then
           found=true
           break
         fi
-      done < <($commentsBody)
+      done < <(printf '%s\n' $commentsBody)
   done
 
   echo "$signOff"
