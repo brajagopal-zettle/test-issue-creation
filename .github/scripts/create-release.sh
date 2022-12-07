@@ -58,7 +58,7 @@ echo "Starting the create release script"
 set -x
 
 commitList=$(getListOfCommits)
-notSignedOffCommits=$(checkCommitSignOff "$commits")
+notSignedOffCommits=$(checkCommitSignOff "$commitList")
 if [[ -n $notSignedOffCommits ]]; then
   gh api --method POST -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments -f body="$notSignedOffCommits"
 else
