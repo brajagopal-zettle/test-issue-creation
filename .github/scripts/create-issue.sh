@@ -80,7 +80,7 @@ createIssue() {
     fi
 
     # Get the current draft release tag and delete them all.
-    current_issue=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/test-git-workflow/issues | jq -r "[ .[] | select( .state | contains(\"open\")) | select( .title | contains(\"$LAST_ISSUE\"))] | .[].number")
+    current_issue=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues | jq -r "[ .[] | select( .state | contains(\"open\")) | select( .title | contains(\"$LAST_ISSUE\"))] | .[].number")
 
     echo "$current_issue"
     # Delete all the draft releases
