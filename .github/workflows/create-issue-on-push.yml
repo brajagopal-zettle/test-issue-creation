@@ -1,0 +1,22 @@
+name: create-issue-on-push
+run-name: Create Issue on push
+on:
+  push:
+    branches:
+      - main
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+      - name: Run create issue script
+        run: |
+          chmod +x ./.github/scripts/create-issue.sh
+          ./.github/scripts/create-issue.sh
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROJECT_REPONAME: ${{ github.event.repository.name }}
+          MAIN_BRANCH: "main"
