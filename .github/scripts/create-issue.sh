@@ -1,8 +1,6 @@
 #!/bin/bash
 
-export RELEASE_TAG_PREFIX="release"
-export RELEASE_TITLE_PREFIX="[deploy] Release"
-export LAST_ISSUE="[Release]"
+export RELEASE_ISSUE_TITLE="[Release]"
 export CLOSE_ISSUE_COMMENT="I'm closing this issue to create a new one."
 
 # Template for the body of the Issue
@@ -19,13 +17,6 @@ EOM
 )
 
     echo "$issue_body"
-}
-
-# Get the latest from default branch
-# ----------------------------------
-getLatest() {
-    git checkout "$MAIN_BRANCH" remotes/origin/"$MAIN_BRANCH"
-    git pull --rebase origin "$MAIN_BRANCH"
 }
 
 # Constructs the changelog. These are all commits from the latest release
@@ -60,30 +51,22 @@ getChangeLogSinceLatestRelease() {
 createIssue() {
     echo "Creating Issue."
     echo "-----------------------"
-    changelog=$1
 
-    # Show all commits in the changelog if the number of commits is less than 10
-    # Otherwise show only the most recent.
-    # If it's less than `num_recent`, then no need to post a PR comment for
-    # the changelog.
+    changelog=$1
     total_commits=$(echo -n "$changelog" | wc -l)
-    num_recent=20
-    changelog_summary_title="($num_recent most recent commits)"
     if [ "$total_commits" -eq "0" ] && [ "x$changelog" = "x" ]; then
         changelog_summary_title="(No commits, maybe it's the first time)"
-        changelog_recent=$changelog
-    elif [ "$total_commits" -le "$num_recent" ]; then
-        changelog_summary_title="(all commits)"
-        changelog_recent=$changelog
     else
-        changelog_recent=$(echo "$changelog" | tail -$num_recent)
+        changelog_summary_title="(all commits)"
     fi
 
-    # Get the current draft release tag and delete them all.
-    current_issue=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues | jq -r "[ .[] | select( .state | contains(\"open\")) | select( .title | contains(\"$LAST_ISSUE\"))] | .[].number")
+    changelog_recent=$changelog
+
+    # Get the current issues for release and delete them all.
+    current_issue=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues | jq -r "[ .[] | select( .state | contains(\"open\")) | select( .title | contains(\"$RELEASE_ISSUE_TITLE\"))] | .[].number")
 
     echo "$current_issue"
-    # Delete all the draft releases
+    # Delete all the drafted release issues
     if [[ -n $current_issue ]]; then
        printf '%s\n' "$current_issue" |
         for issue in $current_issue
@@ -95,16 +78,14 @@ createIssue() {
     fi
 
     issue_body=$(getIssueBody)
-    gh issue create --title "$LAST_ISSUE v$(date +%Y%m%d%H%M)" \
+    gh issue create --title "$RELEASE_ISSUE_TITLE v$(date +%Y%m%d%H%M)" \
                     --body "$issue_body"
 }
 
 
 # Main entry point
 # ----------------
-# validate
-#getLatest
-echo "Starting the script"
+echo "Starting the create issue script"
 set -x
 changelog=$(getChangeLogSinceLatestRelease)
 createIssue "$changelog"
