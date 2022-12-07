@@ -29,16 +29,13 @@ checkCommitSignOff() {
   for commit in $commits
     do
       found=false
-      for comment in $commentsBody
-        do
-          if [ "$commit done" = "$comment" ]; then
-            found=true
-            break
-          fi
-      done
-      if [ "$found" = false ]; then
-        signOff+=("$commit not signed off yet")
-      fi
+      while read -r comment
+      do
+        if [ "$commit done" = "$comment" ]; then
+          found=true
+          break
+        fi
+      done < <($commentsBody)
   done
 
   echo "$signOff"
