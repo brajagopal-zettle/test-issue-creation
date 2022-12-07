@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-          with:
-            ref: main
-            fetch-depth: 0
+        with:
+          ref: main
+          fetch-depth: 0
       - name: Run create release script
         run: |
           chmod +x ./.github/scripts/create-release.sh
