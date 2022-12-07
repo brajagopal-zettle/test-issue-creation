@@ -104,6 +104,7 @@ createIssue() {
 # ----------------
 # validate
 #getLatest
+echo "Starting the script"
 set -x
 changelog=$(getChangeLogSinceLatestRelease)
 createIssue "$changelog"
