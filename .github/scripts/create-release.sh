@@ -33,7 +33,7 @@ checkCommitSignOff() {
       do
         for comment in "${commentArray[@]}";
         do
-          if [ "$commit done" = $(echo "$comment" | xargs ) ]; then
+          if [ "$commit done" = "$(echo "$comment" | xargs )" ]; then
             found=true
             break
           fi
