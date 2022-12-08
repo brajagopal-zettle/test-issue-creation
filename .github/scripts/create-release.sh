@@ -39,6 +39,12 @@ checkCommitSignOff() {
           fi
         done
       done <<< "$commentsBody"
+
+      echo "$commit done: $found"
+      
+      if [ "$found" = false ]; then
+        signOff+=("$commit not signed off yet")
+      fi
   done
 
   echo "$signOff"
