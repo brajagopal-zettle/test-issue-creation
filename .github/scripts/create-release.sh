@@ -23,19 +23,22 @@ getListOfCommits() {
 
 checkCommitSignOff() {
   commits=$1
-  commentsBody=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments | jq ".[].body")
+  commentsBody=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments | jq -r ".[].body + \",\"")
   signOff=()
-  printf "Printing comment body alone \n %s, $commentsBody"
+
   for commit in $commits
     do
       found=false
-      while IFS= read -r comment
+      while IFS=',' read -ra commentArray;
       do
-        if [ "$commit done" = "$comment" ]; then
-          found=true
-          break
-        fi
-      done < <(printf '%s\n' $commentsBody)
+        for comment in "${commentArray[@]}";
+        do
+          if [ "$commit done" = "$comment" ]; then
+            found=true
+            break
+          fi
+        done
+      done <<< "$commentsBody"
   done
 
   echo "$signOff"
