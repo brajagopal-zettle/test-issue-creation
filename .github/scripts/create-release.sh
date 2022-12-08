@@ -33,21 +33,19 @@ checkCommitSignOff() {
       do
         for comment in "${commentArray[@]}";
         do
-          if [ "$commit done" = "$comment" ]; then
+          if [ "$commit done" = $(echo "$comment" | xargs ) ]; then
             found=true
             break
           fi
         done
       done <<< "$commentsBody"
 
-      echo "$commit done: $found"
-      
       if [ "$found" = false ]; then
-        signOff+=("$commit not signed off yet")
+        signOff+=("<p>* $commit not signed off yet")
       fi
   done
 
-  echo "$signOff"
+  echo "${signOff[@]}"
 }
 
 createComment() {
