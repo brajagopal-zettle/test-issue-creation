@@ -22,7 +22,7 @@ jobs:
               owner,
               repo,
               comment_id: context.payload.comment.id,
-              content: "rocket",
+              content: "thumbs up",
             });
       - name: Run create release script
         run: |

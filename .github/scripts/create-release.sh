@@ -131,7 +131,7 @@ createRelease() {
       --title "$RELEASE_TITLE_PREFIX v$tag_date" \
       --notes "$release_body"
 
-  gh api --method POST -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments -f body="$RELEASE_CREATED_SUCCESS_MESSAGE $tag_name <p> (https://www.github.com/"$REPO_OWNER"/$PROJECT_REPONAME/releases/tag/$tag_name)"
+  gh api --method POST -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments -f body="$RELEASE_CREATED_SUCCESS_MESSAGE $tag_name <p> https://www.github.com/"$REPO_OWNER"/$PROJECT_REPONAME/releases/tag/$tag_name"
 }
 
 
