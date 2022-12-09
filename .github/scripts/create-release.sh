@@ -103,14 +103,7 @@ checkCommitSignOff() {
 
 
 createRelease() {
-  lastCommit=''
-
-  for commit in $1
-    do
-      lastCommit="$commit"
-      break
-  done
-
+  lastCommit=$(gh api repos/brajagopal-zettle/"$PROJECT_REPONAME"/commits/"$MAIN_BRANCH"| jq -r ".sha")
   changelog_recent=$(getChangeLogSinceLatestRelease)
   changelog_summary_title="(all commits)"
 
@@ -132,7 +125,7 @@ createRelease() {
   echo "Creating new pre-release with name=$tag_name"
   release_body=$(getReleaseBody)
   gh release create "$tag_name" \
-      --prerelease \
+      --draft \
       --target "$lastCommit" \
       --title "$RELEASE_TITLE_PREFIX v$tag_date" \
       --notes "$release_body"
