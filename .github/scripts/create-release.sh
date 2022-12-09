@@ -103,8 +103,8 @@ checkCommitSignOff() {
 
 
 createRelease() {
-  # commits=$1
-  lastCommit=${$1[0]}
+  commits=$1
+  lastCommit=${commits[0]}
   changelog_recent=$(getChangeLogSinceLatestRelease)
   changelog_summary_title="(all commits)"
 
