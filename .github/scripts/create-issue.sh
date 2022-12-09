@@ -17,16 +17,16 @@ $changelog_recent
 </details>
 
 ### Steps:
-- [] Check the progress of the test deployment in concourse and wait until it is done
-- [] Wait for sign-off by all contributors
+- [ ] Check the progress of the test deployment in concourse and wait until it is done
+- [ ] Wait for sign-off by all contributors
   - All commits in the above Changelog must be signed off.
   - Sign off is done when a contributor comment in the issue with pattern: <7 digit commit SHA> $SIGN_OFF_SUFFIX
   - One comment per commit without line breaks.
-- [] Comment as "$START_RELEASE_TAG_COMMENT" in the issue to start the release process
-- [] Publish the draft release to initiate concourse deployment
-- [] Check the progress of the prod deployment in concourse and wait until it is done
-- [] Post text descriptions (not the raw commit log), including a link to this issue to Slack #release-info
-- [] Close this Issue
+- [ ] Comment as "$START_RELEASE_TAG_COMMENT" in the issue to start the release process
+- [ ] Publish the draft release to initiate concourse deployment
+- [ ] Check the progress of the prod deployment in concourse and wait until it is done
+- [ ] Post text descriptions (not the raw commit log), including a link to this issue to Slack #release-info
+- [ ] Close this Issue
 
 
 ### Rollback:
