@@ -6,7 +6,10 @@ on:
       - created
 jobs:
   issue-commented:
-    if: ${{ !github.event.issue.pull_request && startsWith(github.event.issue.title,'[Release]') == true && github.event.comment.body == 'Create Release'}}
+    if: ${{ !github.event.issue.pull_request
+      && github.event.issue.state == 'open'
+      && startsWith(github.event.issue.title,'[Release]') == true
+      && github.event.comment.body == 'Create Release'}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
