@@ -13,6 +13,17 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+      - name: React to comment
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const {owner, repo} = context.issue;
+            github.reactions.createForIssueComment({
+              owner,
+              repo,
+              comment_id: context.payload.comment.id,
+              content: "rocket",
+            });
       - name: Run create release script
         run: |
           chmod +x ./.github/scripts/create-release.sh
@@ -23,3 +34,4 @@ jobs:
           PROJECT_REPONAME: ${{ github.event.repository.name }}
           MAIN_BRANCH: "main"
           ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO_OWNER: "brajagopal-zettle"

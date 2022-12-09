@@ -4,6 +4,7 @@ export RELEASE_TITLE_PREFIX="[deploy] Release"
 export RELEASE_TAG_PREFIX="release"
 export SIGN_OFF_SUFFIX="done"
 export ISSUE_NOT_SIGNED_OFF_COMMENT="not signed off yet. Please sign off with comment"
+export RELEASE_CREATED_SUCCESS_MESSAGE="Draft Release created successfully with tag-name:"
 
 # Template for the body of the Release
 getReleaseBody() {
@@ -25,10 +26,10 @@ EOM
 # Gets all commits from the latest release to the current merged PR
 # -----------------------------------
 getListOfCommits() {
-  latest_release_branch=$(gh api repos/brajagopal-zettle/"$PROJECT_REPONAME"/releases/latest | jq -r '.target_commitish')
+  latest_release_branch=$(gh api repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/releases/latest | jq -r '.target_commitish')
 
-  latest_release_tag=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/releases/latest | jq -r '.tag_name')
-  last_release_hash=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/git/ref/tags/"$latest_release_tag" | jq -r '.object.sha')
+  latest_release_tag=$(gh api -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/releases/latest | jq -r '.tag_name')
+  last_release_hash=$(gh api -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/git/ref/tags/"$latest_release_tag" | jq -r '.object.sha')
 
   if [ -z "$latest_release_branch" ] || [ "$latest_release_branch" = "null" ]; then
     # First release, empty commits
@@ -49,10 +50,10 @@ getListOfCommits() {
 # the current going-to-be deploy SHA.
 # -----------------------------------
 getChangeLogSinceLatestRelease() {
-  latest_release_branch=$(gh api repos/brajagopal-zettle/"$PROJECT_REPONAME"/releases/latest | jq -r '.target_commitish')
+  latest_release_branch=$(gh api repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/releases/latest | jq -r '.target_commitish')
 
-  latest_release_tag=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/releases/latest | jq -r '.tag_name')
-  last_release_hash=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/git/ref/tags/"$latest_release_tag" | jq -r '.object.sha')
+  latest_release_tag=$(gh api -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/releases/latest | jq -r '.tag_name')
+  last_release_hash=$(gh api -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/git/ref/tags/"$latest_release_tag" | jq -r '.object.sha')
 
   if [ -z "$latest_release_branch" ] || [ "$latest_release_branch" = "null" ]; then
     # First release, empty changelog
@@ -71,12 +72,12 @@ getChangeLogSinceLatestRelease() {
 
 # Fetches all the comments for the issue and
 # compares if the commit is signed off.
-# Pattern to compare '<7 digit Git Commit SHA> done'
+# Pattern to compare '<7 digit Git Commit SHA> $SIGN_OFF_SUFFIX'
 # When pattern is not matched, creates array with list of commits yet to be signed off otherwise empty array
 # -----------------------------------
 checkCommitSignOff() {
   commits=$1
-  commentsBody=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments | jq -r ".[].body + \",\"")
+  commentsBody=$(gh api -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments | jq -r ".[].body + \",\"")
   signOff=()
 
   for commit in $commits
@@ -103,11 +104,11 @@ checkCommitSignOff() {
 
 
 createRelease() {
-  lastCommit=$(gh api repos/brajagopal-zettle/"$PROJECT_REPONAME"/commits/"$MAIN_BRANCH"| jq -r ".sha")
+  lastCommit=$(gh api repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/commits/"$MAIN_BRANCH"| jq -r ".sha")
   changelog_recent=$(getChangeLogSinceLatestRelease)
   changelog_summary_title="(all commits)"
 
-  current_release_tags=$(gh api repos/brajagopal-zettle/"$PROJECT_REPONAME"/releases | jq -r "[ .[] | select( .name | contains(\"$RELEASE_TITLE_PREFIX\")) | select(.draft) ] | .[].tag_name")
+  current_release_tags=$(gh api repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/releases | jq -r "[ .[] | select( .name | contains(\"$RELEASE_TITLE_PREFIX\")) | select(.draft) ] | .[].tag_name")
 
   # Delete all the draft releases
   if [[ -n $current_release_tags ]]; then
@@ -129,6 +130,8 @@ createRelease() {
       --target "$lastCommit" \
       --title "$RELEASE_TITLE_PREFIX v$tag_date" \
       --notes "$release_body"
+
+  gh api --method POST -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments -f body="$RELEASE_CREATED_SUCCESS_MESSAGE $tag_name <p> (https://www.github.com/"$REPO_OWNER"/$PROJECT_REPONAME/releases/tag/$tag_name)"
 }
 
 
@@ -141,7 +144,7 @@ commitList=$(getListOfCommits)
 notSignedOffCommits=$(checkCommitSignOff "$commitList")
 if [[ -n $notSignedOffCommits ]]; then
   # Comment the issue with commits not signed off yet.
-  gh api --method POST -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments -f body="$notSignedOffCommits"
+  gh api --method POST -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/issues/"$ISSUE_NUMBER"/comments -f body="$notSignedOffCommits"
 else
   createRelease "$commitList"
 fi

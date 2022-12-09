@@ -21,3 +21,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PROJECT_REPONAME: ${{ github.event.repository.name }}
           MAIN_BRANCH: "main"
+          REPO_OWNER: "brajagopal-zettle"

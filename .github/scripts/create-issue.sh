@@ -23,10 +23,10 @@ EOM
 # the current going-to-be deploy SHA.
 # -----------------------------------
 getChangeLogSinceLatestRelease() {
-  latest_release_branch=$(gh api repos/brajagopal-zettle/"$PROJECT_REPONAME"/releases/latest | jq -r '.target_commitish')
+  latest_release_branch=$(gh api repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/releases/latest | jq -r '.target_commitish')
 
-  latest_release_tag=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/releases/latest | jq -r '.tag_name')
-  last_release_hash=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/git/ref/tags/"$latest_release_tag" | jq -r '.object.sha')
+  latest_release_tag=$(gh api -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/releases/latest | jq -r '.tag_name')
+  last_release_hash=$(gh api -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/git/ref/tags/"$latest_release_tag" | jq -r '.object.sha')
 
   if [ -z "$latest_release_branch" ] || [ "$latest_release_branch" = "null" ]; then
     # First release, empty changelog
@@ -63,7 +63,7 @@ createIssue() {
     changelog_recent=$changelog
 
     # Get the current issues for release and delete them all.
-    current_issue=$(gh api -H "Accept: application/vnd.github+json" /repos/brajagopal-zettle/"$PROJECT_REPONAME"/issues | jq -r "[ .[] | select( .state | contains(\"open\")) | select( .title | contains(\"$RELEASE_ISSUE_TITLE\"))] | .[].number")
+    current_issue=$(gh api -H "Accept: application/vnd.github+json" /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/issues | jq -r "[ .[] | select( .state | contains(\"open\")) | select( .title | contains(\"$RELEASE_ISSUE_TITLE\"))] | .[].number")
 
     echo "$current_issue"
     # Delete all the drafted release issues
