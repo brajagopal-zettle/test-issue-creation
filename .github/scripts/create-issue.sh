@@ -2,17 +2,36 @@
 
 export RELEASE_ISSUE_TITLE="[Release]"
 export CLOSE_ISSUE_COMMENT="I'm closing this issue to create a new one."
+export SIGN_OFF_SUFFIX="done"
+export START_RELEASE_TAG_COMMENT="Create Release"
 
 # Template for the body of the Issue
 getIssueBody() {
     issue_body=$(cat <<-EOM
-This is a production release.
+# This is a production release.
 <details>
 <summary>CHANGELOG $changelog_summary_title</summary>
 
 $changelog_recent
 
 </details>
+
+### Steps:
+- [] Check the progress of the test deployment in concourse and wait until it is done
+- [] Wait for sign-off by all contributors
+  - All commits in the above Changelog must be signed off.
+  - Sign off is done when a contributor comment in the issue with pattern: <7 digit commit SHA> $SIGN_OFF_SUFFIX
+  - One comment per commit without line breaks.
+- [] Comment as "$START_RELEASE_TAG_COMMENT" in the issue to start the release process
+- [] Publish the draft release to initiate concourse deployment
+- [] Check the progress of the prod deployment in concourse and wait until it is done
+- [] Post text descriptions (not the raw commit log), including a link to this issue to Slack #release-info
+- [] Close this Issue
+
+
+### Rollback:
+If after deployment you observe multiple errors in the API you should rollback as soon as possible. Do not wait for the author of the change to fix it - rollback the release and then investigate and fix it.
+In case you need to rollback please follow the Concourse rollback instructions [here](https://github.com/iZettle/platform-services/blob/main/deploy/concourse/ecs-service-deployment.md#rolling-back-and-rolling-forward)
 EOM
 )
 
