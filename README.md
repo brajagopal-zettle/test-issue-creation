@@ -7,3 +7,7 @@
 - All the contributors are notified in slack. This is yet to be implemented
 - The contributors have to sign off their changes in the issue by commenting as "<7 digit commit SHA> done"
 - The releaser can start the prod deployment once all the sign off is completed
+- The release has to comment in the issue as "Create Release" to start the process
+- A draft release tag is created
+- The releaser can publish the draft release to kick start the concourse deployment
+- Once the deployment is completed, the issue can be closed
