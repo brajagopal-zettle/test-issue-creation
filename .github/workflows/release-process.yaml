@@ -28,10 +28,6 @@ jobs:
       lock_branch_enabled: ${{ steps.set-lock-branch-enabled.outputs.lock_branch_enabled }}
     steps:
       - id: set-lock-branch-enabled
-        uses: actions/checkout@v3
-        with:
-          ref: main
-          fetch-depth: 0
         name: Get branch protection
         run : |
           branch_protection=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$REPO_OWNER/$PROJECT_REPONAME/branches/$MAIN_BRANCH/protection")
