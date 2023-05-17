@@ -4,6 +4,24 @@ on:
     branches:
       - main
 jobs:
+  generate-token:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate Admin Token
+        id: generate-admin-token
+        run: |
+          # Create a temporary token with admin access and write scope
+          response=$(curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/app/installations/${{ github.event.installation.id }}/access_tokens)
+          
+          # Extract the generated admin token
+          admin_token=$(echo "$response" | jq -r '.token')
+          
+          # Set the admin token as an output
+          echo "GITHUB_TOKEN=$admin_token" >> $GITHUB_ENV
   lock-main-branch:
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +69,7 @@ jobs:
   create-issue-for-release:
     needs: fetch-branch-protection-settings
     runs-on: ubuntu-latest
-    if: ${{ needs.fetch-branch-protection-settings.outputs.lock_branch_enabled == 'true' }}
+    if: env.LOCK_BRANCH_ENABLED == 'true'
 
     steps:
       - uses: actions/checkout@v3
