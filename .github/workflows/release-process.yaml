@@ -32,6 +32,7 @@ jobs:
       - name: Get branch protection
         run : |
           branch_protection=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$REPO_OWNER/$PROJECT_REPONAME/branches/$MAIN_BRANCH/protection")
+          echo "branch_protection : $branch_protection"
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,10 +43,11 @@ jobs:
         run: |
           # Extract the `lock_branch.enabled` field from the branch protection output
           lock_branch_enabled=$(echo "$branch_protection" | jq -r '.lock_branch.enabled')
+          echo "lock_branch_enabled: $lock_branch_enabled"
       - name: Set lock_branch_enabled output
         run: |
           # Set the lock_branch_enabled output for use in the next job
-          echo "::set-output name=lock_branch_enabled::$lock_branch_enabled"
+          echo "LOCK_BRANCH_ENABLED=$lock_branch_enabled" >> $GITHUB_ENV
   create-issue-for-release:
     needs: fetch-branch-protection-settings
     runs-on: ubuntu-latest
