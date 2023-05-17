@@ -29,11 +29,11 @@ enforce_admins=$(echo "$existing_settings" | jq -r '.enforce_admins.enabled')
 restrictions=$(echo "$existing_settings" | jq -r '.restrictions')
 required_pull_request_reviews=$(echo "$existing_settings" | jq -r '.required_pull_request_reviews | del(.url)')
 
-if [ -z "$required_status_checks_strict" ]; then
+if [[ -z "$required_status_checks_strict" ]]; then
   required_status_checks_strict=false
 fi
 
-if [ -z "$required_status_checks_contexts" ]; then
+if [[ -z "$required_status_checks_contexts" ]]; then
   required_status_checks_strict=[]
 fi
 
