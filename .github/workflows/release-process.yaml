@@ -31,10 +31,7 @@ jobs:
           fetch-depth: 0
       - name: Get branch protection
         run : |
-          branch_protection=$(gh api \ 
-          -H "Accept: application/vnd.github+json" \ 
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/"$REPO_OWNER"/"$PROJECT_REPONAME"/branches/"$MAIN_BRANCH"/protection)
+          branch_protection=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$REPO_OWNER/$PROJECT_REPONAME/branches/$MAIN_BRANCH/protection")
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
