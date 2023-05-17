@@ -2,16 +2,16 @@ name: Release Process
 on:
   workflow_dispatch:
     branches:
-      - master
+      - main
 jobs:
-  lock-master-branch:
+  lock-main-branch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: master
+          ref: main
           fetch-depth: 0
-      - name: Lock master branch
+      - name: Lock main branch
         run: |
           chmod +x ./.github/scripts/lock-unlock-main-branch.sh
           ./.github/scripts/lock-unlock-main-branch.sh true
@@ -22,12 +22,12 @@ jobs:
           MAIN_BRANCH: "main"
           REPO_OWNER: "brajagopal-zettle"
   fetch-branch-protection-settings:
-    needs: lock-master-branch
+    needs: lock-main-branch
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: master
+          ref: main
           fetch-depth: 0
       - name: Get branch protection
         run : |
@@ -57,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: master
+          ref: main
           fetch-depth: 0
       - name: Run create issue script
         run: |
