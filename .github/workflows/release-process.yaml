@@ -1,5 +1,4 @@
-name: prod-release-process
-run-name: Release Process
+name: Release Process
 on:
   workflow_dispatch:
     branches:
