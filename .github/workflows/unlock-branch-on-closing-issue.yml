@@ -1,0 +1,22 @@
+name: Unlock master branch
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  unlock-master-branch:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.title == '[deploy] Release v'* }}
+
+    steps:
+      - name: Unlock the master branch
+        run: |
+          chmod +x ./.github/scripts/lock-unlock-main-branch.sh
+          ./.github/scripts/lock-unlock-main-branch.sh false
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          PROJECT_REPONAME: ${{ github.event.repository.name }}
+          MAIN_BRANCH: "main"
+          REPO_OWNER: "brajagopal-zettle"
