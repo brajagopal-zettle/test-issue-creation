@@ -19,7 +19,7 @@ if [[ -n $current_issue ]]; then
 fi
 
 # Fetch the latest Pre Release tag
-pre_release_tag=$(gh api "/repos/$REPO_OWNER/$PROJECT_REPONAME/releases" | jq -r '.[] | select(.prerelease) | select(.name | startswith(\"$PRE_RELEASE_TITLE\"))')
+pre_release_tag=$(gh api "/repos/$REPO_OWNER/$PROJECT_REPONAME/releases" | jq --arg PRE_RELEASE_TITLE "$PRE_RELEASE_TITLE" -r '.[] | select(.prerelease) | select(.name | startswith($PRE_RELEASE_TITLE))')
 
 # Fetch name and body of the Pre Release tag
 issue_name=$(echo "$pre_release_tag" | jq -r '.name')
