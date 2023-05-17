@@ -24,7 +24,10 @@ jobs:
   fetch-branch-protection-settings:
     needs: lock-main-branch
     runs-on: ubuntu-latest
+    outputs:
+      lock_branch_enabled: ${{ steps.set-lock-branch-enabled.outputs.lock_branch_enabled }}
     steps:
+      - id: set-lock-branch-enabled
       - uses: actions/checkout@v3
         with:
           ref: main
@@ -35,7 +38,7 @@ jobs:
           echo "branch_protection : $branch_protection"
           lock_branch_enabled=$(echo "$branch_protection" | jq -r '.lock_branch.enabled')
           echo "lock_branch_enabled: $lock_branch_enabled"
-          echo "LOCK_BRANCH_ENABLED=$lock_branch_enabled" >> $GITHUB_OUTPUT
+          echo "lock_branch_enabled=$lock_branch_enabled" >> $GITHUB_OUTPUT
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN }}
@@ -45,7 +48,7 @@ jobs:
   create-issue-for-release:
     needs: fetch-branch-protection-settings
     runs-on: ubuntu-latest
-    if: ${{ needs.fetch-branch-protection-settings.outputs.output1 == 'true' }}
+    if: ${{ needs.fetch-branch-protection-settings.outputs.lock_branch_enabled == 'true' }}
 
     steps:
       - uses: actions/checkout@v3
