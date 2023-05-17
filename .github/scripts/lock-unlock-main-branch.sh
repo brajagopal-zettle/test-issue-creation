@@ -29,12 +29,12 @@ enforce_admins=$(echo "$existing_settings" | jq -r '.enforce_admins.enabled')
 restrictions=$(echo "$existing_settings" | jq -r '.restrictions')
 required_pull_request_reviews=$(echo "$existing_settings" | jq -r '.required_pull_request_reviews | del(.url)')
 
-if [[ -z "${required_status_checks_strict+x}" ]]; then
+if [ "$required_status_checks_strict" == "null" ]; then
   required_status_checks_strict=false
 fi
 
-if [[ -z "${required_status_checks_contexts+x}" ]]; then
-  $required_status_checks_contexts=[]
+if [ "$required_status_checks_contexts" == "null" ]; then
+  required_status_checks_contexts=[]
 fi
 
 # Create protection settings JSON
