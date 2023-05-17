@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export PRE_RELEASE_TITLE="[deploy] Release v"
+export CLOSE_ISSUE_COMMENT="I'm closing this issue to create a new one."
 
 # Fetch the current open issue that was created before.
 # Ideally this case should not happen since the issue either would have been closed after release or not created at all.

@@ -7,7 +7,7 @@ on:
 jobs:
   unlock-master-branch:
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.title == '[deploy] Release v'* }}
+    if: startsWith(github.event.issue.title, '[deploy] Release v')
 
     steps:
       - name: Unlock the master branch
