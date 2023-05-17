@@ -65,11 +65,11 @@ jobs:
       - name: Set lock_branch_enabled output
         run: |
           # Set the lock_branch_enabled output for use in the next job
-          echo "LOCK_BRANCH_ENABLED=$lock_branch_enabled" >> $GITHUB_ENV
+          echo "LOCK_BRANCH_ENABLED=$lock_branch_enabled" >> $GITHUB_OUTPUT
   create-issue-for-release:
     needs: fetch-branch-protection-settings
     runs-on: ubuntu-latest
-    if: ${{ env.LOCK_BRANCH_ENABLED == 'true' }}
+    if: ${{ needs.fetch-branch-protection-settings.outputs.output1 == 'true' }}
 
     steps:
       - uses: actions/checkout@v3
