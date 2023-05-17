@@ -49,5 +49,7 @@ new_settings=$(jq -n \
 # Lock/Unlock the branch
 new_settings=$(echo "$new_settings" | jq --argjson lock_branch "$lock_branch" '.lock_branch = $lock_branch')
 
+echo "New Settings: $new_settings"
+
 update_protection "$new_settings"
 
