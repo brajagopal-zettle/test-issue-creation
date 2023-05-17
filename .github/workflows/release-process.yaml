@@ -69,7 +69,7 @@ jobs:
   create-issue-for-release:
     needs: fetch-branch-protection-settings
     runs-on: ubuntu-latest
-    if: env.LOCK_BRANCH_ENABLED == 'true'
+    if: $LOCK_BRANCH_ENABLED == 'true'
 
     steps:
       - uses: actions/checkout@v3
