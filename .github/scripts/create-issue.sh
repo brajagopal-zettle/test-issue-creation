@@ -42,6 +42,7 @@ pre_release_tag=$(gh api "/repos/$REPO_OWNER/$PROJECT_REPONAME/releases" | jq --
 
 # Fetch name and body of the Pre Release tag
 issue_name=$(echo "$pre_release_tag" | jq -r '.name')
-issue_body=$(echo "$pre_release_tag" | jq -r '.body' | echo "$issue_steps")
+issue_body=$(echo "$pre_release_tag" | jq -r '.body')
+issue_body+=$issue_steps
 
 gh issue create --title "$issue_name" --body "$issue_body"
