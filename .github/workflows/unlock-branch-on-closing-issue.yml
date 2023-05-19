@@ -10,6 +10,10 @@ jobs:
     if: startsWith(github.event.issue.title, '[deploy] Release v')
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
       - name: Unlock the master branch
         run: |
           chmod +x ./.github/scripts/lock-unlock-main-branch.sh
