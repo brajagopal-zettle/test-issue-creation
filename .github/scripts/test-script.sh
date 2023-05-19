@@ -15,7 +15,7 @@ getList() {
   echo "${signOff[@]}"
   printf "\n </details>"
 }
-
+# just testing
 test=$(getList)
 echo "${test[@]}"
 
