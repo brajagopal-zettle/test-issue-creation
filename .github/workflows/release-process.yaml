@@ -17,7 +17,7 @@ jobs:
           ./.github/scripts/lock-unlock-main-branch.sh true
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           PROJECT_REPONAME: ${{ github.event.repository.name }}
           MAIN_BRANCH: "main"
           REPO_OWNER: "brajagopal-zettle"
@@ -37,7 +37,7 @@ jobs:
           ./.github/scripts/create-issue.sh
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           PROJECT_REPONAME: ${{ github.event.repository.name }}
           MAIN_BRANCH: "main"
           REPO_OWNER: "brajagopal-zettle"
