@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export PRE_RELEASE_TITLE="[deploy] Release v"
 export CLOSE_ISSUE_COMMENT="I'm closing this issue to create a new one."
 

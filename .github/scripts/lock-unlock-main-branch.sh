@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 lock_branch="$1"
 
 # Function to get branch protection settings
@@ -59,5 +61,13 @@ new_settings=$(echo "$new_settings" | jq --argjson lock_branch "$lock_branch" '.
 
 echo "New Settings: $new_settings"
 
-update_protection "$new_settings"
+updated_settings=$(update_protection "$new_settings")
+
+is_branch_locked=$(echo "$updated_settings" | jq -r '.lock_branch.enabled')
+
+if [ "$is_branch_locked" = "true" ]; then
+  exit 0
+else
+  exit 1
+fi
 
